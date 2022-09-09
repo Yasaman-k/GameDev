@@ -16,6 +16,7 @@ var size = require('gulp-size');
 var uglify = require('gulp-uglify');
 var zip = require('gulp-zip');
 var source = require('vinyl-source-stream');
+var rimraf = require('rimraf');
 
 
 
@@ -52,7 +53,7 @@ task('build_source', function () {
     .pipe(source('build.js'))
     .pipe(buffer())
     .pipe(gulpif(prod, uglify()))
-    // .pipe(dest('build'));
+    .pipe(dest('build'));
 });
 
 task('build_index', function () {
@@ -73,14 +74,11 @@ task('build_styles', function () {
     .pipe(dest('build'));
 });
 
-
-
-
-
 // task('clean', function () {
 //   rimraf.sync('build');
 //   rimraf.sync('dist');
 // });
+
 // function isFixed(file) {
 //   // Has ESLint fixed the file contents?
 //   return file.eslint != null && file.eslint.fixed;
@@ -131,9 +129,4 @@ function browserifyError(err) {
   gutil.log(gutil.colors.red('ERROR'), gutil.colors.gray(err.message));
   this.emit('end');
 }
-task('default', parallel('build_source', 'build_index', 'build_styles','dist', 'serve'));
-// task('default', series('dist', 'serve'));
-
-// exports.build = parallel('dist','serve');
-
-// exports.build = series(build_source, build_index, build_styles, parallel(clean, watch));
+task('default', parallel('build_source', 'build_index', 'build_styles', 'dist', 'serve'));
